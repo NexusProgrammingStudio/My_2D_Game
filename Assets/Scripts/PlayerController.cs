@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     Animator m_Animator;
+    Vector3 Pscale,Ppos;
+    float Pspeed,Pjump;
+    float horizontal,vertical;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,39 +17,52 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float speed=Input.GetAxisRaw("Horizontal");
-        float jump = Input.GetAxisRaw("Vertical");
-        m_Animator.SetFloat("Speed",Mathf.Abs(speed));
-        Vector3 scale = transform.localScale;
-        Vector3 pos = transform.localPosition;
-        if(Input.GetKey(KeyCode.LeftArrow))
+        horizontal = Input.GetAxisRaw("Horizontal");
+        vertical = Input.GetAxisRaw("Vertical");        
+
+        MoveCharacter(horizontal);
+        PlayerMovementAnimation(horizontal);
+        Player_Jump_Crouch(vertical);
+    }
+
+    public void MoveCharacter(float horizontal)
+    {
+        Ppos = transform.position;
+        Ppos.x += horizontal * Time.deltaTime;
+        transform.position = Ppos;
+    }
+
+    public void PlayerMovementAnimation(float horizontal)
+    {
+        m_Animator.SetFloat("Speed",Mathf.Abs(horizontal));
+        Pscale = transform.localScale;
+        Ppos = transform.localPosition;
+        if(horizontal < 0)
         {
-            scale.x = -1f * Mathf.Abs(scale.x);
-            pos.x = -0.1f + pos.x;
-            // pos.y = 0.1f - pos.y;
-            pos.z = 0;
+            Pscale.x = -1f * Mathf.Abs(Pscale.x);
+            Ppos.x = -0.1f + Ppos.x;
         }
-        else if(Input.GetKey(KeyCode.RightArrow))
+        else if (horizontal > 0)
         {
-            scale.x = 1f * Mathf.Abs(scale.x);
-            pos.x = 0.1f + pos.x;
-            // pos.y = 0.1f + pos.y; 
-            pos.z = 0;
-              
+            Pscale.x = 1f * Mathf.Abs(Pscale.x);
+            Ppos.x = 0.1f + Ppos.x;
         }
-        if(Input.GetKey(KeyCode.UpArrow))
+        transform.localScale = Pscale;
+        transform.localPosition = Ppos;
+    }
+    public void Player_Jump_Crouch(float vertical)
+    {
+        if(vertical > 0)
         {
             m_Animator.SetTrigger("Jump_trigger");
 
             m_Animator.ResetTrigger("Crouch_Trigger");
         }
-        else if(Input.GetKey(KeyCode.DownArrow))
+        else if(vertical < 0)
         {
             m_Animator.SetTrigger("Crouch_Trigger");
 
             m_Animator.ResetTrigger("Jump_trigger");
         }
-        transform.localScale = scale;
-        transform.localPosition = pos;
     }
 }
