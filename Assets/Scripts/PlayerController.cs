@@ -5,13 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     Animator m_Animator;
+    Rigidbody2D m_RigidBody2D;
     Vector3 Pscale,Ppos;
     float Pspeed,Pjump;
     float horizontal,vertical;
     // Start is called before the first frame update
     void Start()
     {
-        m_Animator = gameObject.GetComponent<Animator>();       
+        m_Animator = gameObject.GetComponent<Animator>();
+        m_RigidBody2D = gameObject.GetComponent<Rigidbody2D>();      
     }
 
     // Update is called once per frame
@@ -20,19 +22,23 @@ public class PlayerController : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");        
 
-        MoveCharacter(horizontal);
-        PlayerMovementAnimation(horizontal);
-        Player_Jump_Crouch(vertical);
+        MoveCharacter(horizontal, vertical);
+        PlayerMovementAnimation(horizontal, vertical);
     }
 
-    public void MoveCharacter(float horizontal)
+    public void MoveCharacter(float horizontal, float vertical)
     {
         Ppos = transform.position;
         Ppos.x += horizontal * Time.deltaTime;
         transform.position = Ppos;
+
+        if (vertical > 0)
+        {
+            m_RigidBody2D.AddForce(new Vector2(0f, 25), ForceMode2D.Force);
+        }
     }
 
-    public void PlayerMovementAnimation(float horizontal)
+    public void PlayerMovementAnimation(float horizontal, float vertical)
     {
         m_Animator.SetFloat("Speed",Mathf.Abs(horizontal));
         Pscale = transform.localScale;
@@ -49,14 +55,14 @@ public class PlayerController : MonoBehaviour
         }
         transform.localScale = Pscale;
         transform.localPosition = Ppos;
-    }
-    public void Player_Jump_Crouch(float vertical)
-    {
+
         if(vertical > 0)
         {
             m_Animator.SetTrigger("Jump_trigger");
 
             m_Animator.ResetTrigger("Crouch_Trigger");
+
+            
         }
         else if(vertical < 0)
         {
