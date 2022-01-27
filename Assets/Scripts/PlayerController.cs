@@ -9,8 +9,8 @@ public class PlayerController : MonoBehaviour
     Vector3 Pscale,Ppos;
     float Pspeed,Pjump;
     float horizontal,vertical;
-    // Start is called before the first frame update
-    void Start()
+
+    void Awake()
     {
         m_Animator = gameObject.GetComponent<Animator>();
         m_RigidBody2D = gameObject.GetComponent<Rigidbody2D>();      
@@ -20,10 +20,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");        
-
-        MoveCharacter(horizontal, vertical);
-        PlayerMovementAnimation(horizontal, vertical);
+        vertical = Input.GetAxisRaw("Vertical");
     }
 
     public void MoveCharacter(float horizontal, float vertical)
@@ -34,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
         if (vertical > 0)
         {
-            m_RigidBody2D.AddForce(new Vector2(0f, 25), ForceMode2D.Force);
+            m_RigidBody2D.AddForce(new Vector2(0f, 20), ForceMode2D.Force);
         }
     }
 
@@ -70,5 +67,11 @@ public class PlayerController : MonoBehaviour
 
             m_Animator.ResetTrigger("Jump_trigger");
         }
+    }
+
+    public void FixedUpdate()
+    {
+         MoveCharacter(horizontal, vertical);
+        PlayerMovementAnimation(horizontal, vertical);
     }
 }
