@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     Animator m_Animator;
     Rigidbody2D m_RigidBody2D;
+    public ScoreController scoreController;
     Vector3 Pscale,Ppos;
     float Pspeed,Pjump;
     float horizontal,vertical;
@@ -13,7 +15,14 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         m_Animator = gameObject.GetComponent<Animator>();
-        m_RigidBody2D = gameObject.GetComponent<Rigidbody2D>();      
+        m_RigidBody2D = gameObject.GetComponent<Rigidbody2D>();
+
+    }
+
+    internal void PickKey()
+    {
+        Debug.Log("Player Picked the Key");
+        scoreController.IncrementScore(10);
     }
 
     // Update is called once per frame
