@@ -9,10 +9,11 @@ public class EnemyController : MonoBehaviour
     public Transform groundCheckPos;
     private bool mustTurn;
     public LayerMask groundLayer;
+
     void Start()
     {
         mustPatrol = true;
-        WalkSpeed = WalkSpeed * 100f;
+        WalkSpeed = 200f;
 
     }
 
@@ -39,7 +40,7 @@ public class EnemyController : MonoBehaviour
         {
             Flip();
         }
-        rb.velocity = new Vector3(WalkSpeed * Time.deltaTime,0 ,0);
+        rb.velocity = new Vector3(WalkSpeed * Time.fixedDeltaTime,0 ,0);
 	}
 
     void Flip()
@@ -49,4 +50,12 @@ public class EnemyController : MonoBehaviour
         WalkSpeed *= -1;
         mustPatrol = true;
 	}
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<PlayerController>() != null)
+        {
+            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+            playerController.KillPlayer();
+        }
+    }
 }

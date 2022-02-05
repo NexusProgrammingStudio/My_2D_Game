@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     Animator m_Animator;
     Rigidbody2D m_RigidBody2D;
     public ScoreController scoreController;
-    Vector3 Pscale,Ppos;
-    float Pspeed,Pjump;
-    float horizontal,vertical;
+    public LevelOver LevelController;
+    Vector3 Pscale, Ppos;
+    float horizontal, vertical;
 
     void Awake()
     {
@@ -46,10 +43,10 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerMovementAnimation(float horizontal, float vertical)
     {
-        m_Animator.SetFloat("Speed",Mathf.Abs(horizontal));
+        m_Animator.SetFloat("Speed", Mathf.Abs(horizontal));
         Pscale = transform.localScale;
         Ppos = transform.localPosition;
-        if(horizontal < 0)
+        if (horizontal < 0)
         {
             Pscale.x = -1f * Mathf.Abs(Pscale.x);
             Ppos.x = -0.1f + Ppos.x;
@@ -62,15 +59,15 @@ public class PlayerController : MonoBehaviour
         transform.localScale = Pscale;
         transform.localPosition = Ppos;
 
-        if(vertical > 0)
+        if (vertical > 0)
         {
             m_Animator.SetTrigger("Jump_trigger");
 
             m_Animator.ResetTrigger("Crouch_Trigger");
 
-            
+
         }
-        else if(vertical < 0)
+        else if (vertical < 0)
         {
             m_Animator.SetTrigger("Crouch_Trigger");
 
@@ -78,9 +75,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void KillPlayer()
+    {
+        Debug.Log("Player Killed");
+        LevelController.PlayerDied();
+        this.enabled = false;
+    }
+
     public void FixedUpdate()
     {
-         MoveCharacter(horizontal, vertical);
+        MoveCharacter(horizontal, vertical);
         PlayerMovementAnimation(horizontal, vertical);
     }
 }
